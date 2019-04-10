@@ -1,56 +1,58 @@
+--- 
+description: "Launch a basic instance;"
 heat_template_version: 2014-10-16
-
-description: Launch a basic instance;
-
-parameters:
-
-  image:
-    type: string
-    description: Image used for servers
-    default: xenial-server-cloudimg-amd64-disk1
-
-  flavor:
-    type: string
-    description: Flavor used for servers
+outputs: 
+  accessIp: 
+    description: "IP address of the instance."
+    value: 
+      get_attr: 
+        - server
+        - first_address
+parameters: 
+  flavor: 
     default: 2048-10-1-1
-
-  network_id:
+    description: "Flavor used for servers"
     type: string
-    description: ID of network used
-    default: 9ec556ab-d458-470e-96bc-1bab0ef66fb9
-        
-  key_name:
+  image: 
+    default: xenial-server-cloudimg-amd64-disk1
+    description: "Image used for servers"
     type: string
-    description: Name of an existing key pair to use for the servers
+  key_name: 
     default: tp3key
-    
-  serverUrl:
+    description: "Name of an existing key pair to use for the servers"
     type: string
-    description: Github link to python server code
-    default: https://raw.githubusercontent.com/houssemmh/INF8480-TP3/master/server.py
-
-resources:
-  server:
-    type: OS::Nova::Server
-    properties:
-      image: { get_param: image }
-      flavor: { get_param: flavor}
-      key_name: { get_param: key_name}
-      networks:
-        - network: { get_param: network_id }
-      user_data_format: RAW
-      user_data:
-        str_replace:
-          template: |
-            #!/bin/bash
-            echo "Test"
-            sudo apt-get -y update
-            sudo apt-get -y install python
-            wget serverUrl
-            python server.py
+  network_id: 
+    default: 9ec556ab-d458-470e-96bc-1bab0ef66fb9
+    description: "ID of network used"
+    type: string
+  serverUrl: 
+    default: "https://raw.githubusercontent.com/houssemmh/INF8480-TP3/master/server.py"
+    description: "Github link to python server code"
+    type: string
+resources: 
+  server: 
+    properties: 
+      flavor: 
+        get_param: flavor
+      image: 
+        get_param: image
+      key_name: 
+        get_param: key_name
+      networks: 
+        - 
+          network: 
+            get_param: network_id
+      user_data: 
+        str_replace: 
           params: 
-            serverUrl: { get_param: serverUrl }
-outputs:
-  accessIp:
-    description: IP address of the instance.
-    value: { get_attr: [server, first_address] }
+            serverUrl: 
+              get_param: serverUrl
+          template: |
+              #!/bin/bash
+              echo "Test"
+              sudo apt-get -y update
+              sudo apt-get -y install python
+              wget serverUrl
+              python server.py
+      user_data_format: RAW
+    type: "OS::Nova::Server"
