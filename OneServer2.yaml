@@ -1,0 +1,74 @@
+--- 
+description: "Launch a basic instance;"
+heat_template_version: 2014-10-16
+outputs: 
+  accessIp: 
+    description: "IP address of the instance."
+    value: 
+      get_attr: 
+        - server
+        - first_address
+parameters: 
+  flavor: 
+    default: 2048-10-1-1
+    description: "Flavor used for servers"
+    type: string
+  image: 
+    default: xenial-server-cloudimg-amd64-disk1
+    description: "Image used for servers"
+    type: string
+  key_name: 
+    default: tp3key
+    description: "Name of an existing key pair to use for the servers"
+    type: string
+  network_id: 
+    default: 9ec556ab-d458-470e-96bc-1bab0ef66fb9
+    description: "ID of network used"
+    type: string
+  serverUrl: 
+    default: "https://raw.githubusercontent.com/houssemmh/INF8480-TP3/master/server.py"
+    description: "Github link to python server code"
+    type: string
+  external_network_subnet:
+    type: string
+    description: Sub betwork id.
+    default: 5f75174e-4cbd-4d92-a462-697e11dfb4b0
+resources: 
+  server: 
+    properties: 
+      flavor: 
+        get_param: flavor
+      image: 
+        get_param: image
+      key_name: 
+        get_param: key_name
+      networks: 
+        - 
+          network: 
+            get_param: network_id
+      user_data: 
+        str_replace: 
+          params: 
+            serverUrl: 
+              get_param: serverUrl
+          template: |
+              #!/bin/bash
+              echo "Test"
+              sudo apt-get -y update
+              sudo apt-get -y install python
+              wget serverUrl
+              python server.py
+      user_data_format: RAW
+    type: "OS::Nova::Server"
+
+  poolmember:
+    type: OS::Neutron::LBaaS::PoolMember
+    properties:
+      address: 
+        get_attr:
+          - server
+          - first_address
+      pool: pool3
+      protocol_port: 8080
+      subnet:
+        get_param: external_network_subnet
