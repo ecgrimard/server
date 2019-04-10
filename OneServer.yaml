@@ -9,6 +9,9 @@ outputs:
         - server
         - first_address
 parameters: 
+  pool:
+    type: string
+    description: blablabla
   flavor: 
     default: 2048-10-1-1
     description: "Flavor used for servers"
@@ -29,6 +32,10 @@ parameters:
     default: "https://raw.githubusercontent.com/houssemmh/INF8480-TP3/master/server.py"
     description: "Github link to python server code"
     type: string
+  external_network_subnet:
+    type: string
+    description: Sub betwork id.
+    default: 5f75174e-4cbd-4d92-a462-697e11dfb4b0
 resources: 
   server: 
     properties: 
@@ -56,3 +63,10 @@ resources:
               python server.py
       user_data_format: RAW
     type: "OS::Nova::Server"
+  poolMember:
+    type: OS::Neutron::LBaaS::PoolMember
+    properties:
+      address: {get_attr: [server, first_address]}
+      pool: { get_param: pool }
+      protocol_port: 8080
+      subnet: { get_param: external_network_subnet }
