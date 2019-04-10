@@ -7,7 +7,9 @@ outputs:
     value: 
       get_attr: 
         - server
-        - first_address
+        - networks
+        - private
+        - 0
 parameters: 
   flavor: 
     default: 2048-10-1-1
