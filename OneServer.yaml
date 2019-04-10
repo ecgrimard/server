@@ -70,8 +70,7 @@ resources:
         get_attr:
           - server
           - first_address
-      pool:
-        get_param: pool
+      pool: pool3
       protocol_port: 8080
       subnet:
         get_param: external_network_subnet
