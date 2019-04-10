@@ -1,9 +1,10 @@
-heat_template_version: 2015-10-15
-description: Launch a basic instance with Ubuntu Xenial image using the
-             ``2048-10-1-1`` flavor, ``daniel`` key,  and one network.
+heat_template_version: 2014-10-16
+
+description: Launch a basic instance;
 
 parameters:
- image:
+
+  image:
     type: string
     description: Image used for servers
     default: xenial-server-cloudimg-amd64-disk1
@@ -12,7 +13,7 @@ parameters:
     type: string
     description: Flavor used for servers
     default: 2048-10-1-1
-    
+
   network_id:
     type: string
     description: ID of network used
@@ -49,7 +50,6 @@ resources:
             python server.py
           params: 
             serverUrl: { get_param: serverUrl }
-   
 outputs:
   accessIp:
     description: IP address of the instance.
