@@ -60,15 +60,3 @@ resources:
               python server.py
       user_data_format: RAW
     type: "OS::Nova::Server"
-
-  poolmember:
-    type: OS::Neutron::LBaaS::PoolMember
-    properties:
-      address: 
-        get_attr:
-          - server
-          - first_address
-      pool: pool3
-      protocol_port: 8080
-      subnet:
-        get_param: external_network_subnet
