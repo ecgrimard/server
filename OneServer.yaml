@@ -9,8 +9,6 @@ outputs:
         - server
         - first_address
 parameters: 
-  pool:
-    type: json
   flavor: 
     default: 2048-10-1-1
     description: "Flavor used for servers"
